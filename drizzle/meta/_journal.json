@@ -15,6 +15,13 @@
       "when": 1772898416355,
       "tag": "0001_organic_payback",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1773257650105,
+      "tag": "0002_steady_cyclops",
+      "breakpoints": true
     }
   ]
 }

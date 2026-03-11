@@ -1,30 +1,36 @@
 import { db } from "./db"
-import { tasks } from "./schema"
-import { desc, eq } from "drizzle-orm"  // ← Нужно добавить eq
+import { users, tasks } from "./schema"
+import { eq } from "drizzle-orm"
 
-// Получение всех задач
-export async function getAllTasks() {
-  return db.select().from(tasks).orderBy(desc(tasks.createdAt))
+export async function createUser(name: string, email: string) {
+  return db.insert(users).values({ name, email }).returning()
 }
 
-// Добавление задачи
-export async function createTask(title: string, description: string | null) {
-  return db.insert(tasks).values({
-    title,
-    description,
-    status: "pending",
-  }).returning()
+export async function createTask(title: string, content: string, userId: number) {
+  return db.insert(tasks).values({ title, content, userId }).returning()
 }
 
-// Удаление задачи
-export async function deleteTask(taskId: number) {  // ← Убрал лишние параметры
-  return db.delete(tasks).where(eq(tasks.id, taskId)).returning()  // ← Исправил where
+export async function getTasksWithAuthor() {
+  return db
+  .select({
+    id: tasks.id,
+    title: tasks.title,
+    author: users.name,
+    content: tasks.content,
+    authoremail: users.email,
+  })
+  .from(tasks)
+  .leftJoin(users, eq(tasks.userId, users.id))
 }
 
-// Обновление статуса
-export async function updateTaskStatus(taskId: number, status: string) {
-  return db.update(tasks)
-    .set({ status })
-    .where(eq(tasks.id, taskId))  // ← Добавил where
-    .returning()
+export async function getUsers() {
+  return db.select().from(users)
+}
+
+export async function deleteTask(taskId: number) {
+  return db.delete(tasks).where(eq(tasks.id, taskId))
+}
+
+export async function deleteUser(userId: number) {
+  return db.delete(tasks).where(eq(tasks.userId, userId)), db.delete(users).where(eq(users.id, userId))
 }
