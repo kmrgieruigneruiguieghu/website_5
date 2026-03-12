@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 export default async function Page() {
   const users = await getUsers()
   const tasksWithAuthors = await getTasksWithAuthor()
-
   return (
     <div className="min-h-screen relative">
       <div className="fixed inset-0 z-0">
